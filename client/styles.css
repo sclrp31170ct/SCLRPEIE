@@ -1,0 +1,287 @@
+/* สไตล์เพิ่มเติมสำหรับระบบจัดการสภานักเรียน */
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Kanit:wght@200;300;400;500;600;700&display=swap');
+
+:root {
+  --font-thai: 'Kanit', sans-serif;
+  --font-eng: 'Inter', sans-serif;
+}
+
+html {
+  -webkit-text-size-adjust: 100%;
+  -moz-text-size-adjust: 100%;
+  -ms-text-size-adjust: 100%;
+  touch-action: manipulation;
+}
+
+body {
+  font-family: var(--font-thai);
+  transition: background-color 0.3s ease, color 0.3s ease;
+  overscroll-behavior-y: contain;
+  background:
+    radial-gradient(circle at top left, rgba(59, 130, 246, 0.14), transparent 24%),
+    radial-gradient(circle at bottom right, rgba(250, 204, 21, 0.16), transparent 26%),
+    linear-gradient(135deg, #f8fbff 0%, #f8fafc 55%, #eef2ff 100%);
+}
+
+body::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  background-image: radial-gradient(rgba(255, 255, 255, 0.6) 1px, transparent 1px);
+  background-size: 22px 22px;
+  opacity: 0.24;
+  z-index: -1;
+}
+
+.dark body {
+  background:
+    radial-gradient(circle at top left, rgba(59, 130, 246, 0.18), transparent 24%),
+    radial-gradient(circle at bottom right, rgba(250, 204, 21, 0.12), transparent 26%),
+    linear-gradient(135deg, #020617 0%, #0f172a 45%, #111827 100%);
+}
+
+.dark body::before {
+  opacity: 0.08;
+}
+
+.view-transition {
+  transition: opacity 240ms cubic-bezier(0.22, 1, 0.36, 1), transform 240ms cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.view-transition.is-visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.modal-backdrop {
+  opacity: 0;
+  transition: opacity 220ms ease;
+}
+
+.modal-backdrop.modal-show {
+  opacity: 1;
+}
+
+.modal-panel {
+  opacity: 0;
+  transform: translateY(18px) scale(0.98);
+  transition: transform 220ms ease, opacity 220ms ease;
+}
+
+.modal-panel.modal-show {
+  opacity: 1;
+  transform: translateY(0) scale(1);
+}
+
+body.modal-open {
+  overflow: hidden;
+}
+
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(12px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.fade-in-up {
+  animation: fadeInUp 280ms ease-out both;
+}
+
+.toast-item {
+  opacity: 0;
+  transform: translateY(-8px) scale(0.98);
+  transition: opacity 220ms ease, transform 220ms ease;
+}
+
+.toast-item.toast-visible {
+  opacity: 1;
+  transform: translateY(0) scale(1);
+}
+
+.sidebar-link {
+  transition: all 220ms cubic-bezier(0.22, 1, 0.36, 1), transform 220ms cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.sidebar-link:hover {
+  transform: translateX(3px);
+}
+
+.card-hover {
+  transition: transform 220ms cubic-bezier(0.22, 1, 0.36, 1), box-shadow 220ms cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.card-hover:hover {
+  transform: translateY(-2px);
+}
+
+.font-english {
+  font-family: var(--font-eng);
+}
+
+/* Custom Scrollbar */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.dark ::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #cbd5e1;
+  border-radius: 3px;
+}
+
+.dark ::-webkit-scrollbar-thumb {
+  background: #475569;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #94a3b8;
+}
+
+/* Glassmorphism Classes */
+.glass-effect {
+  background: rgba(255, 255, 255, 0.75);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 255, 255, 0.25);
+}
+
+@media screen and (max-width: 640px) {
+  input,
+  textarea,
+  select,
+  button {
+    font-size: 16px !important;
+  }
+  header {
+    position: sticky;
+    top: 0;
+    z-index: 40;
+  }
+  #page-header-title {
+    min-width: 0;
+    word-break: break-word;
+  }
+}
+
+.dark .glass-effect {
+  background: rgba(15, 23, 42, 0.75);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+/* Transitions */
+.transition-all-300 {
+  transition: all 300ms cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Custom Gradients */
+.bg-gradient-school {
+  background: linear-gradient(135deg, #1e3a8a 0%, #1c2541 60%, #facc15 100%);
+}
+
+.bg-gradient-school-dark {
+  background: linear-gradient(135deg, #0b1329 0%, #1e3a8a 70%, #ca8a04 100%);
+}
+
+/* Pulse animation for active notification/indicator */
+@keyframes status-pulse {
+  0%, 100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+  50% {
+    opacity: .5;
+    transform: scale(1.1);
+  }
+}
+
+.status-active-pulse {
+  animation: status-pulse 2s infinite ease-in-out;
+}
+
+/* Custom shadows */
+.shadow-premium {
+  box-shadow: 0 18px 40px -25px rgba(15, 23, 42, 0.35), 0 8px 20px -12px rgba(15, 23, 42, 0.16);
+}
+
+.dark .shadow-premium {
+  box-shadow: 0 22px 46px -24px rgba(2, 6, 23, 0.8), 0 10px 24px -14px rgba(2, 6, 23, 0.6);
+}
+
+[class~="bg-white"][class~="rounded-2xl"] {
+  border: 1px solid rgba(226, 232, 240, 0.95);
+  box-shadow: 0 22px 45px -24px rgba(15, 23, 42, 0.28);
+  backdrop-filter: blur(8px);
+}
+
+.dark [class~="bg-white"][class~="rounded-2xl"] {
+  border-color: rgba(71, 85, 105, 0.55);
+  box-shadow: 0 24px 50px -24px rgba(2, 6, 23, 0.65);
+}
+
+.sidebar-link.active {
+  background: linear-gradient(90deg, rgba(59, 130, 246, 0.24), rgba(59, 130, 246, 0.08));
+  box-shadow: inset 0 0 0 1px rgba(59, 130, 246, 0.16);
+}
+
+header {
+  position: sticky;
+  top: 0;
+  z-index: 50;
+  background: rgba(255, 255, 255, 0.78);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+}
+
+.dark header {
+  background: rgba(15, 23, 42, 0.78);
+}
+
+aside {
+  background: linear-gradient(180deg, rgba(2, 6, 23, 0.98) 0%, rgba(15, 23, 42, 0.98) 100%);
+  box-shadow: 10px 0 35px -20px rgba(2, 6, 23, 0.35);
+}
+
+.shadow-premium-hover {
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.shadow-premium-hover:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 10px 25px -5px rgba(59, 130, 246, 0.1), 0 8px 16px -6px rgba(59, 130, 246, 0.05);
+}
+
+.dark .shadow-premium-hover:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.4), 0 8px 16px -6px rgba(0, 0, 0, 0.3);
+}
+
+/* File Upload Drag & Drop Area */
+.upload-zone {
+  border: 2px dashed #cbd5e1;
+  transition: all 0.2s ease;
+}
+
+.dark .upload-zone {
+  border: 2px dashed #475569;
+}
+
+.upload-zone.dragover {
+  border-color: #3b82f6;
+  background-color: rgba(59, 130, 246, 0.05);
+}

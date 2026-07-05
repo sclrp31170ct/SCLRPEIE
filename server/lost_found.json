@@ -1,0 +1,38 @@
+[
+  {
+    "id": "lf-1783083587470",
+    "reporterName": "ธรรมรินทร์ สุวรรณสังข์",
+    "studentId": "20670",
+    "classroom": "ม.5/5",
+    "type": "found",
+    "itemName": "กฟกฟ",
+    "roomLocation": "ฟ",
+    "dateTime": "2026-07-03T19:59",
+    "description": "กฟกฟก",
+    "contact": "กฟก",
+    "status": "searching",
+    "pinned": false,
+    "images": [],
+    "comments": [],
+    "adminNotes": "",
+    "resolvedDate": ""
+  },
+  {
+    "id": "lf-1783083460088",
+    "reporterName": "ธรรมรินทร์ สุวรรณสังข์",
+    "studentId": "20670",
+    "classroom": "ม.5/5",
+    "type": "lost",
+    "itemName": "ca",
+    "roomLocation": "ad",
+    "dateTime": "2026-07-03T19:57",
+    "description": "ad",
+    "contact": "ad",
+    "status": "searching",
+    "pinned": true,
+    "images": [],
+    "comments": [],
+    "adminNotes": "",
+    "resolvedDate": ""
+  }
+]

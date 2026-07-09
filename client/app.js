@@ -109,6 +109,12 @@ function getLostFoundCategoryBadge(category) {
   return `<span class="px-2.5 py-1 rounded-full bg-slate-100 text-slate-700 text-[10px] font-semibold border border-slate-200 dark:bg-slate-700 dark:text-slate-200 dark:border-slate-600"><span class="mr-1">${meta.icon}</span>${meta.label}</span>`;
 }
 
+function getEffectiveLostFoundCategory(item) {
+  if (!item) return "others";
+  if (item.type === "money_lost" || item.type === "money_found") return "money";
+  return item.category || "others";
+}
+
 function renderLostFoundCategoryOptions(selectedCategory = "others") {
   const container = getEl("lf-category-options");
   const hidden = getEl("lf-category");
@@ -2970,7 +2976,7 @@ function clearPlayedSongs() {
 
 // 1. แสดงรายการของหายและของที่เก็บได้สำหรับฝั่งนักเรียน
 function createLostFoundCard(item) {
-  const categoryMeta = getLostFoundCategoryMeta(item.category);
+  const categoryMeta = getLostFoundCategoryMeta(getEffectiveLostFoundCategory(item));
   const imageHtml = item.images && item.images.length > 0
     ? `<div class="h-32 rounded-xl overflow-hidden border border-slate-200 dark:border-slate-700 bg-slate-100 mb-3"><img src="${item.images[0]}" class="w-full h-full object-cover" alt="${item.itemName}"></div>`
     : `<div class="h-32 rounded-xl border border-dashed border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-900/40 flex items-center justify-center text-slate-400 mb-3"><i class="fa-solid fa-box text-xl"></i></div>`;
@@ -2993,7 +2999,7 @@ function createLostFoundCard(item) {
   }
 
   const pinnedBadge = item.pinned ? `<span class="px-2.5 py-1 rounded-full bg-yellow-100 text-yellow-700 text-[10px] font-semibold"><i class="fa-solid fa-thumbtack mr-1"></i>ปักหมุด</span>` : "";
-  const categoryBadge = getLostFoundCategoryBadge(item.category);
+  const categoryBadge = getLostFoundCategoryBadge(getEffectiveLostFoundCategory(item));
   const typeBadge = item.type === "money_lost"
     ? `<span class="px-2.5 py-1 rounded-full bg-rose-100 text-rose-700 text-[10px] font-semibold">เงินหาย</span>`
     : item.type === "money_found"
@@ -3095,7 +3101,7 @@ function renderStudentLostFound() {
       : currentLfFilter === "returned"
         ? item.status === "returned"
         : true;
-    const matchesCategory = currentLfCategory === "all" || item.category === currentLfCategory;
+    const matchesCategory = currentLfCategory === "all" || getEffectiveLostFoundCategory(item) === currentLfCategory;
     return matchesStatus && matchesCategory;
   });
 
@@ -3383,7 +3389,7 @@ function renderAdminLostFound() {
       : item.type === "found" || item.type === "money_found");
   }
   if (categoryFilter !== "all") {
-    filtered = filtered.filter(item => item.category === categoryFilter);
+    filtered = filtered.filter(item => getEffectiveLostFoundCategory(item) === categoryFilter);
   }
 
   filtered.sort((a, b) => {
@@ -3408,7 +3414,7 @@ function renderAdminLostFound() {
   emptyEl.classList.add("hidden");
 
   tableBody.innerHTML = filtered.map(item => {
-    const categoryMeta = getLostFoundCategoryMeta(item.category);
+    const categoryMeta = getLostFoundCategoryMeta(getEffectiveLostFoundCategory(item));
     const typeBadge = item.type === "lost"
       ? `<span class="px-2 py-0.5 bg-rose-100 text-rose-800 rounded font-bold">ของหาย</span>`
       : item.type === "money_lost"

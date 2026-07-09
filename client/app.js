@@ -2780,11 +2780,15 @@ function renderAdminSongs() {
         </td>
       </tr>
     `;
-    emptyDiv.classList.add("hidden");
-    updateBatchActionBar();
+    emptyDiv.classList.add("hidden")
     return;
   }
   emptyDiv.classList.add("hidden");
+
+function updateBatchActionBar() {
+    // ยังไม่ต้องทำอะไร
+}
+
 
   // 3. จัดกลุ่มตามวันที่ขอเพลง
   const groupedSongs = {};

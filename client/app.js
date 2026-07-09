@@ -22,6 +22,10 @@ let adminChatAttachments = [];
 let appInitialized = false;
 let hashRoutingBound = false;
 let fileUploadHandlersBound = false;
+
+
+
+
 const API_BASE_URL = (() => {
   if (typeof window !== 'undefined' && window.location) {
     const origin = window.location.origin || '';
@@ -2973,7 +2977,15 @@ function createLostFoundCard(item) {
 
   let statusBadge = "";
   if (item.status === "searching") {
-    statusBadge = `<span class="px-2.5 py-1 rounded-full bg-amber-100 text-amber-700 text-[10px] font-semibold">กำลังตามหา</span>`;
+    if (item.type === "money_lost") {
+      statusBadge = `<span class="px-2.5 py-1 rounded-full bg-amber-100 text-amber-700 text-[10px] font-semibold">เงินหาย - กำลังตามหา</span>`;
+    } else if (item.type === "money_found") {
+      statusBadge = `<span class="px-2.5 py-1 rounded-full bg-blue-100 text-blue-700 text-[10px] font-semibold">เก็บเงินได้ - ตามหาเจ้าของ</span>`;
+    } else if (item.type === "lost") {
+      statusBadge = `<span class="px-2.5 py-1 rounded-full bg-amber-100 text-amber-700 text-[10px] font-semibold">กำลังตามหา</span>`;
+    } else {
+      statusBadge = `<span class="px-2.5 py-1 rounded-full bg-blue-100 text-blue-700 text-[10px] font-semibold">เก็บได้ - ตามหาเจ้าของ</span>`;
+    }
   } else if (item.status === "found_matching") {
     statusBadge = `<span class="px-2.5 py-1 rounded-full bg-blue-100 text-blue-700 text-[10px] font-semibold">พบของ/ติดต่อรับ</span>`;
   } else if (item.status === "returned") {
@@ -2982,6 +2994,13 @@ function createLostFoundCard(item) {
 
   const pinnedBadge = item.pinned ? `<span class="px-2.5 py-1 rounded-full bg-yellow-100 text-yellow-700 text-[10px] font-semibold"><i class="fa-solid fa-thumbtack mr-1"></i>ปักหมุด</span>` : "";
   const categoryBadge = getLostFoundCategoryBadge(item.category);
+  const typeBadge = item.type === "money_lost"
+    ? `<span class="px-2.5 py-1 rounded-full bg-rose-100 text-rose-700 text-[10px] font-semibold">เงินหาย</span>`
+    : item.type === "money_found"
+      ? `<span class="px-2.5 py-1 rounded-full bg-emerald-100 text-emerald-700 text-[10px] font-semibold">เก็บเงินได้</span>`
+      : item.type === "lost"
+        ? `<span class="px-2.5 py-1 rounded-full bg-rose-100 text-rose-700 text-[10px] font-semibold">ของหาย</span>`
+        : `<span class="px-2.5 py-1 rounded-full bg-emerald-100 text-emerald-700 text-[10px] font-semibold">เก็บได้</span>`;
 
   const notesHtml = item.adminNotes
     ? `<div class="mt-3 rounded-lg border border-emerald-100 bg-emerald-50 p-2 text-[10px] text-emerald-700"><i class="fa-solid fa-circle-check mr-1"></i>${item.adminNotes}</div>`
@@ -3040,6 +3059,7 @@ function createLostFoundCard(item) {
           <h4 class="font-bold text-sm text-slate-800 dark:text-white leading-snug min-w-0">${displayName}</h4>
           <div class="flex items-center gap-2 flex-wrap">
             ${pinnedBadge}
+            ${typeBadge}
             ${categoryBadge}
             ${statusBadge}
           </div>
@@ -3142,6 +3162,7 @@ function openLostFoundModal(type) {
   // สำหรับปุ่มแจ้งเงิน ให้เซ็ตเป็น "money" และแสดง selector
   if (type === "money") {
     document.getElementById("lf-type").value = "money"; // ยังไม่ได้เซ็ต money_lost/money_found ที่นี่ เรียกใช้ selector
+    document.getElementById("lf-category").value = "money";
     
     const title = document.getElementById("lf-modal-title");
     title.innerHTML = `<i class="fa-solid fa-coins text-amber-600 mr-2"></i>แจ้งเงินเอา`;
@@ -3265,7 +3286,11 @@ function submitLostFoundReport() {
   const dateTime = document.getElementById("lf-datetime").value;
   const description = document.getElementById("lf-description").value.trim();
   const contact = document.getElementById("lf-contact").value.trim();
-  const category = document.getElementById("lf-category").value || "others";
+  let category = document.getElementById("lf-category").value || "others";
+
+  if (type === "money_lost" || type === "money_found") {
+    category = "money";
+  }
 
   // ดึงข้อมูลผู้แจ้งที่กรอกล่าสุด
   const typedName = document.getElementById("lf-reporter-name").value.trim();
@@ -3393,7 +3418,17 @@ function renderAdminLostFound() {
           : `<span class="px-2 py-0.5 bg-emerald-100 text-emerald-800 rounded font-bold">เก็บได้</span>`;
 
     let statusText = "";
-    if (item.status === "searching") statusText = `<span class="text-rose-600 font-bold"><i class="fa-solid fa-spinner animate-spin mr-1 text-[10px]"></i>กำลังตามหา</span>`;
+    if (item.status === "searching") {
+      if (item.type === "money_lost") {
+        statusText = `<span class="text-rose-600 font-bold"><i class="fa-solid fa-spinner animate-spin mr-1 text-[10px]"></i>เงินหาย - กำลังตามหา</span>`;
+      } else if (item.type === "money_found") {
+        statusText = `<span class="text-blue-600 font-bold"><i class="fa-solid fa-spinner animate-spin mr-1 text-[10px]"></i>เก็บเงินได้ - ตามหาเจ้าของ</span>`;
+      } else if (item.type === "lost") {
+        statusText = `<span class="text-rose-600 font-bold"><i class="fa-solid fa-spinner animate-spin mr-1 text-[10px]"></i>กำลังตามหา</span>`;
+      } else {
+        statusText = `<span class="text-blue-600 font-bold"><i class="fa-solid fa-spinner animate-spin mr-1 text-[10px]"></i>เก็บได้ - ตามหาเจ้าของ</span>`;
+      }
+    }
     if (item.status === "found_matching") statusText = `<span class="text-blue-600 font-bold"><i class="fa-solid fa-circle-info mr-1 text-[10px]"></i>พบของ/ติดต่อรับ</span>`;
     if (item.status === "returned") statusText = `<span class="text-emerald-600 font-bold"><i class="fa-solid fa-circle-check mr-1 text-[10px]"></i>ส่งคืนแล้ว</span>`;
 

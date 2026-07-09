@@ -5,6 +5,7 @@ const cors = require('cors');
 
 const app = express();
 const PORT = process.env.PORT || 3000;
+const HOST = process.env.HOST || '0.0.0.0';
 const DATA_DIR = path.resolve(__dirname);
 const FILES = {
   news: 'news.json',
@@ -21,7 +22,10 @@ app.use(cors());
 app.use(express.json({ limit: '10mb' }));
 app.use(express.urlencoded({ extended: true, limit: '10mb' }));
 
-const PUBLIC_DIR = path.resolve(__dirname, '../client');
+const PUBLIC_DIR = path.resolve(__dirname, '../../client');
+if (!fs.existsSync(PUBLIC_DIR)) {
+  console.warn(`Public client directory not found: ${PUBLIC_DIR}`);
+}
 app.use(express.static(PUBLIC_DIR));
 
 function ensureDataDir() {
@@ -103,8 +107,11 @@ app.get('*', (req, res) => {
 });
 
 if (require.main === module) {
-  app.listen(PORT, () => {
-    console.log(`Student Council backend listening on http://localhost:${PORT}`);
+  app.listen(PORT, HOST, () => {
+    console.log(`Student Council backend listening on http://${HOST}:${PORT}`);
+    if (HOST === '0.0.0.0') {
+      console.log('Use your machine IP on the LAN to access from other devices.');
+    }
   });
 }
 

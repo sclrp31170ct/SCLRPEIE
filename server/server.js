@@ -22,10 +22,26 @@ app.use(cors());
 app.use(express.json({ limit: '10mb' }));
 app.use(express.urlencoded({ extended: true, limit: '10mb' }));
 
-const PUBLIC_DIR = path.resolve(__dirname, '../../client');
-if (!fs.existsSync(PUBLIC_DIR)) {
-  console.warn(`Public client directory not found: ${PUBLIC_DIR}`);
+const PUBLIC_DIR_CANDIDATES = [
+  path.resolve(__dirname, '../../client'),
+  path.resolve(__dirname, '../client'),
+  path.resolve(__dirname, '../../../client'),
+  path.resolve(__dirname, '../../../../client')
+];
+
+const PUBLIC_DIR = PUBLIC_DIR_CANDIDATES.find((candidate) => {
+  try {
+    return fs.existsSync(candidate) && fs.statSync(candidate).isDirectory();
+  } catch (err) {
+    return false;
+  }
+});
+
+if (!PUBLIC_DIR) {
+  console.error('Public client directory not found. Tried:', PUBLIC_DIR_CANDIDATES.join(', '));
+  process.exit(1);
 }
+
 app.use(express.static(PUBLIC_DIR));
 
 function ensureDataDir() {

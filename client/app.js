@@ -92,7 +92,7 @@ function clearAuthSession() {
 const LOST_FOUND_CATEGORIES = [
   { value: "money", label: "เงิน", icon: "💵" },
   { value: "electronics", label: "อุปกรณ์อิเล็กทรอนิกส์", icon: "📱" },
-  { value: "documents", label: "เอกสาร/บัตร", icon: "🪪" },
+  { value: "documents", label: "เอกสาร/บัตร", icon: "📃" },
   { value: "keys", label: "กุญแจ/กุญแจรถ", icon: "🔑" },
   { value: "clothing", label: "เสื้อผ้า/หมวก", icon: "👕" },
   { value: "accessories", label: "เครื่องประดับ", icon: "💍" },
@@ -3054,9 +3054,15 @@ function createLostFoundCard(item) {
     </div>
   `;
 
-  const displayName = item.type === "money_found" && currentRole !== "admin"
-    ? "*".repeat(String(item.itemName).replace(/\D/g, "").length || 4)
-    : item.itemName;
+const displayName =
+    item.type === "money_found" && currentRole !== "admin"
+        ? (() => {
+            const money = String(item.itemName).replace(/\D/g, "");
+            return (money.length <= 1
+                ? "*"
+                : money.charAt(0) + "*".repeat(money.length - 1)) + " บาท";
+        })()
+        : item.itemName;
   return `
     <div class="bg-white dark:bg-slate-800 p-5 rounded-2xl border border-slate-100 dark:border-slate-700/50 shadow-premium flex flex-col justify-between text-xs fade-in-up">
       <div>
@@ -3101,7 +3107,9 @@ function renderStudentLostFound() {
       : currentLfFilter === "returned"
         ? item.status === "returned"
         : true;
-    const matchesCategory = currentLfCategory === "all" || getEffectiveLostFoundCategory(item) === currentLfCategory;
+   const matchesCategory =
+    currentLfCategory === "all" ||
+    getEffectiveLostFoundCategory(item) === currentLfCategory;
     return matchesStatus && matchesCategory;
   });
 
@@ -3114,8 +3122,14 @@ function renderStudentLostFound() {
     );
   }
 
-  const lostItems = filtered.filter(item => item.type === "lost" || item.type === "money_lost");
-  const foundItems = filtered.filter(item => item.type === "found" || item.type === "money_found");
+  const lostItems = filtered.filter(item =>
+    item.type === "lost" ||
+    item.type === "money_lost"
+);
+  const foundItems = filtered.filter(item =>
+    item.type === "found" ||
+    item.type === "money_found"
+);
 
   lostItems.sort((a, b) => (b.pinned ? 1 : 0) - (a.pinned ? 1 : 0));
   foundItems.sort((a, b) => (b.pinned ? 1 : 0) - (a.pinned ? 1 : 0));
